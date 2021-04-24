@@ -48,7 +48,7 @@
             <el-button circle icon="el-icon-edit" type="primary" @click="changeUserInfo(scope.row.id)"></el-button>
             <el-button circle icon="el-icon-delete" type="danger" @click="confirmDelete(scope.row.id)"></el-button>
             <el-tooltip :enterable="false" content="设置" effect="dark" placement="top">
-              <el-button circle icon="el-icon-setting" type="warning"></el-button>
+              <el-button circle icon="el-icon-setting" type="warning" @click="distributeUser(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -106,6 +106,19 @@
       <span slot="footer" class="dialog-footer">
     <el-button @click="isAddDialog= false">取 消</el-button>
     <el-button type="primary" @click="changeDialogForm">确 定</el-button>
+  </span>
+    </el-dialog>
+    <!--    分配用户对话框-->
+    <el-dialog :visible.sync="isDistributeUserDialog" title="提示" width="30%" @close="closeDialogOfDistribute">
+      <span>当前用户名：{{ currentUserRow.username }}</span><br>
+      <span>当前角色：{{ currentUserRow.role_name }}</span>
+      <h5>分配当前角色：</h5>
+      <el-select v-model="currentId" placeholder="请选择新职位">
+        <el-option v-for="item in options" :key="item.id" :label="item.roleName" :value="item.id"></el-option>
+      </el-select>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="isDistributeUserDialog = false">取 消</el-button>
+    <el-button type="primary" @click="reDistributeUserDialog">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -232,7 +245,11 @@ export default {
           validator: checkphone,
           trigger: 'blur'
         }]
-      }
+      },
+      isDistributeUserDialog: false,
+      currentUserRow: {},
+      options: [],
+      currentId: ''
     }
   },
   methods: {
@@ -326,6 +343,31 @@ export default {
         this.$message.info('cancel to delete')
       }
       )
+    },
+    async distributeUser (curentRow) {
+      this.currentUserRow = curentRow
+      const { data: res } = await this.$http.get('roles')
+      if (res.meta.status !== 200) {
+        return this.$message.error('fail to get in distributeUser,maybe netwroks mistakes')
+      }
+      this.options = res.data
+      this.isDistributeUserDialog = true
+    },
+    async reDistributeUserDialog () {
+      if (this.currentId) {
+        const { data: res } = await this.$http.put(`users/${this.currentUserRow.id}/role`, { rid: this.currentId })
+        if (res.meta.status !== 200) {
+          return this.$message.error('wrong fail in reDistributeUserDialog')
+        } else {
+          this.getUserList()
+          this.currentId = ''
+          this.currentUserRow = []
+          this.isDistributeUserDialog = false
+          return this.$message.success('success in reDistributeUserDialog')
+        }
+      } else {
+        return this.$message.warning('please chose one option')
+      }
     }
   },
   created () {

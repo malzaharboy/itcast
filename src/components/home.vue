@@ -9,7 +9,7 @@
       <el-aside :width="isCollapse? '68px':'200px'">
         <div class="buttonCollapse" @click="clickCollapse">|||</div>
         <el-menu :collapse="isCollapse" :collapse-transition="false" :default-active="defaultActive"
-                 active-text-color="blue" background-color="#333744" router text-color="#fff" unique-opened>
+                 active-text-color="orange" background-color="#333744" router text-color="#fff" unique-opened>
           <el-submenu v-for="item in leftMenuList" :key="item.id" :index="item.id">
             <template slot="title">
               <i :class='iconFonts[item.id]'></i>
