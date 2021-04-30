@@ -11,3 +11,11 @@ html,body,#app{
 .ql-editor{
     min-height: 300px;
 }
+/*element cascade超出屏幕显示，百分比没效果*/
+.el-cascader-panel {
+    height: 500px;
+}
+/* 隐藏横向滚动条 */
+.el-scrollbar__wrap{
+    overflow-x: hidden;
+}

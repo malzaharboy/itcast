@@ -47,8 +47,7 @@
           <el-cascader
             v-model="parentvalue"
             :options="parentCateList"
-            :props="cascadeProps"
-            change-on-select clearable expand-trigger="hover"
+            :props="cascadeProps" clearable
             @change="parentCateChange">
           </el-cascader>
         </el-form-item>
@@ -113,7 +112,8 @@ export default {
       cascadeProps: {
         value: 'cat_id',
         label: 'cat_name',
-        children: 'children'
+        children: 'children',
+        expandTrigger: 'hover'
       },
       parentvalue: []
 
@@ -150,7 +150,7 @@ export default {
         return this.$message.error('fail in getParentCateList')
       }
       this.parentCateList = res.data
-      // console.log(res)
+      console.log(res)
     },
     parentCateChange () {
       if (this.parentvalue.length !== 0) {
